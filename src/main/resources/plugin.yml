@@ -1,0 +1,20 @@
+name: WarpPlugin
+main: therr.WarpPlugin.WarpPlugin
+version: 0.0.1-SNAPSHOT
+author: Mateusz Buchajewicz
+commands:
+  setwarp:
+    description: Set warp with given name where you are.
+    usage: /setwarp [name]
+    permission: WarpPlugin.setwarp
+    permission-message: You don't have permission to use setwarp!
+  warplist:
+    description: Prints list of warps on server.
+    usage: /warplist
+    permission: WarpPlugin.warplist
+    permission-message: You don't have permission to use warplist!
+  warp:
+    description: Teleports player to warp.
+    usage: /warp [name]
+    permission: WarpPlugin.warp
+    permission-message: You don't have permission to use warp!
