@@ -5,7 +5,7 @@ author: Mateusz Buchajewicz
 commands:
   setwarp:
     description: Set warp with given name where you are.
-    usage: /setwarp [name]
+    usage: /setwarp [warpname]
     permission: WarpPlugin.setwarp
     permission-message: You don't have permission to use setwarp!
   warplist:
@@ -15,6 +15,6 @@ commands:
     permission-message: You don't have permission to use warplist!
   warp:
     description: Teleports player to warp.
-    usage: /warp [name]
+    usage: /warp [warpname]
     permission: WarpPlugin.warp
     permission-message: You don't have permission to use warp!
