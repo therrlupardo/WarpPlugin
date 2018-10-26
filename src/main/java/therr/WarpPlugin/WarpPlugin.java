@@ -75,6 +75,7 @@ public class WarpPlugin extends JavaPlugin {
                 sender.sendMessage("/warp set [name] - sets warp with name");
                 sender.sendMessage("/warp delete [name] - Deletes warp with name");
                 sender.sendMessage("/warp list - lists warps");
+                sender.sendMessage("/warp tp [name] - teleport to warp with name");
                 return true;
             }
 
