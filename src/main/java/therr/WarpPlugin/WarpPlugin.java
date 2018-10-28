@@ -30,7 +30,7 @@ public class WarpPlugin extends JavaPlugin {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             String[] fields;
-
+            
             getLogger().info("Warps:");
 
             while ((line = br.readLine()) != null){
