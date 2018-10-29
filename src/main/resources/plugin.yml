@@ -3,8 +3,23 @@ main: therr.WarpPlugin.WarpPlugin
 version: 1.0
 author: Mateusz Buchajewicz
 commands:
+  setwarp:
+    description: Sets warp with given name in place where you are.
+    usage: /setwarp [warp name]
+    permission: WarpPlugin.setwarp
+    permissoin-message: You don't have permission to use setwarp!
   warp:
-    description: Warp info command
-    usage: /warp <command> [warp name]
+    description: Teleports you to warp with given name.
+    usage: /warp [warp name]
     permission: WarpPlugin.warp
     permissoin-message: You don't have permission to use warp!
+  delwarp:
+    description: Deletes warp with given name
+    usage: /delwarp [warp name]
+    permission: WarpPlugin.delwarp
+    permissoin-message: You don't have permission to use delwarp!
+  warplist:
+    description: Shows list of current warps
+    usage: /warplist
+    permission: WarpPlugin.warplist
+    permissoin-message: You don't have permission to use warplist!
