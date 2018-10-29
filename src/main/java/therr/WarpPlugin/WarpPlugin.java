@@ -1,6 +1,7 @@
 package therr.WarpPlugin;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -31,18 +32,17 @@ public class WarpPlugin extends JavaPlugin {
             String line;
             String[] fields;
 
-            getLogger().info("Warps:");
+
 
             while ((line = br.readLine()) != null){
-                getLogger().info(line);
                 fields = line.split(";");
-
-                warplist.add(new Warp(fields[0], new Location(Bukkit.getWorld(fields[1]),
-                        Double.parseDouble(fields[2]),
-                        Double.parseDouble(fields[3]),
-                        Double.parseDouble(fields[4]),
-                        Float.parseFloat(fields[5]),
-                        Float.parseFloat(fields[6]))));
+                int i = 0;
+                warplist.add(new Warp(fields[i++], fields[i++], new Location(Bukkit.getWorld(fields[i++]),
+                        Double.parseDouble(fields[i++]),
+                        Double.parseDouble(fields[i++]),
+                        Double.parseDouble(fields[i++]),
+                        Float.parseFloat(fields[i++]),
+                        Float.parseFloat(fields[i]))));
             }
 
         }
@@ -71,92 +71,100 @@ public class WarpPlugin extends JavaPlugin {
 
 
         if (cmd.getName().equalsIgnoreCase("warp")) {
-            if(args.length == 0){
-                sender.sendMessage("/warp set [name] - sets warp with name");
-                sender.sendMessage("/warp delete [name] - Deletes warp with name");
-                sender.sendMessage("/warp list - lists warps");
-                sender.sendMessage("/warp tp [name] - teleport to warp with name");
-                return true;
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                for (Warp it : warplist) {
+                    if (it.getName().equalsIgnoreCase(args[0]) && player.getName().equalsIgnoreCase(it.getOwner())) {
+                            player.teleport(it.getLocation());
+                            player.sendMessage("You were teleported to warp " + ChatColor.AQUA + args[0]);
+                        return true;
+                    }
+                }
+                player.sendMessage("This warp doesn't exist!");
             }
-
-            switch(args[0]){
-                case "tp":
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-                        for (Warp it : warplist) {
-                            if (it.getName().equals(args[1])) {
-                                player.teleport(it.getLocation());
-                                player.sendMessage("You were teleported to warp " + args[1]);
-                                return true;
-                            }
-                        }
-                    }
-                    return true;
-                //end tp
-                case "set":
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-
-                        for(Warp it : warplist){
-                            if(it.getName().equals(args[1])){
-                                player.sendMessage("Warp name already used!");
-                                return true;
-                            }
-                        }
-
-                        Location location = player.getLocation();
-                        location.setX(floor(location.getX())+0.5);
-                        location.setY(floor(location.getY()));
-                        location.setZ(floor(location.getZ())+0.5);
-                        location.setPitch(0);
-                        location.setYaw(0);
-                        warplist.add(new Warp(args[1], location));
-
-                        getLogger().info("Warp " + args[1] + " set in location (" + location.getX() + ", " + location.getY() + ", " + location.getZ()+")");
-                        player.sendMessage("Warp " + args[1] + " set in location (" + location.getX() + ", " + location.getY() + ", " + location.getZ()+")");
-
-                        WriteWarpsToFile();
-
-
-                    }
-                    return true;
-                //end set
-                case "list":
-                    for(Warp it : warplist){
-                        getLogger().info(it.simpleString());
-                        if(sender instanceof Player){
-                            Player player = (Player) sender;
-                            player.sendMessage(it.toString());
-                        }
-                    }
-                    return true;
-                //end list
-                case "delete":
-                    Warp toRem = null;
-                    for(Warp it : warplist){
-                        if(it.getName().equalsIgnoreCase(args[1])) {
-                            toRem = it;
-                            break;
-                        }
-                    }
-                    if(toRem != null) {
-                        warplist.remove(toRem);
-                        getLogger().info("Warp " + toRem.getName() + " removed");
-                        if(sender instanceof Player){
-                            Player player = (Player) sender;
-                            player.sendMessage("Warp " + toRem.getName() + " removed");
-                        }
-                    }
-                    WriteWarpsToFile();
-                //end delete
-                case "help":
-                    sender.sendMessage("/set [name] - sets warp with name");
-                    sender.sendMessage("/delete [name] - Deletes warp with name");
-                    sender.sendMessage("/list - lists warps");
-                //end help
-            }
-
+            return true;
         }
+        else if(cmd.getName().equalsIgnoreCase("setwarp")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+
+                for (Warp it : warplist) {
+                    if (it.getName().equalsIgnoreCase(args[0]) && player.getName().equalsIgnoreCase(it.getOwner())) {
+                        player.sendMessage("You already have warp " + ChatColor.AQUA + args[0] + ChatColor.WHITE + "!");
+                        return true;
+                    }
+                }
+
+                Location location = player.getLocation();
+                location.setX(floor(location.getX()) + 0.5);
+                location.setY(floor(location.getY()));
+                location.setZ(floor(location.getZ()) + 0.5);
+                location.setPitch(0);
+                location.setYaw(0);
+                warplist.add(new Warp(args[0], player.getName(), location));
+
+                player.sendMessage("Warp " +
+                        ChatColor.AQUA + args[0] +
+                        ChatColor.WHITE + " set in location (" + location.getX() + ", " + location.getY() +  ", " + location.getZ() +  ")");
+
+                WriteWarpsToFile();
+            }
+            return true;
+        }
+
+        else if(cmd.getName().equalsIgnoreCase("warplist")) {
+            Player player = null;
+            if (sender instanceof Player) {
+                player = (Player) sender;
+            }else {return true;}
+
+            Boolean playerHasWarps = false;
+            for(Warp it : warplist){
+                if (player.getName().equalsIgnoreCase(it.getOwner())){
+                    playerHasWarps = true;
+                    break;
+                }
+            }
+
+            if(!playerHasWarps){
+                player.sendMessage(ChatColor.RED + "You don't have any warp!");
+            }
+            else{
+                player.sendMessage(ChatColor.YELLOW + "List of your warps:");
+                for (Warp it : warplist) {
+                    if(player.getName().equalsIgnoreCase(it.getOwner())){
+                        player.sendMessage(it.toString());
+                    }
+
+                }
+            }
+
+            return true;
+        }
+
+        else if(cmd.getName().equalsIgnoreCase("delwarp")) {
+            Warp toRem = null;
+            Player player = null;
+            if(sender instanceof Player){
+                player = (Player) sender;
+                for (Warp it : warplist) {
+                    if (it.getName().equalsIgnoreCase(args[0]) && player.getName().equalsIgnoreCase(it.getOwner())) {
+                        toRem = it;
+                        break;
+                    }
+                }
+                if (toRem != null) {
+                    warplist.remove(toRem);
+                    player.sendMessage("Warp " + ChatColor.AQUA + toRem.getName() + ChatColor.WHITE + " removed");
+                }
+                WriteWarpsToFile();
+            }
+
+            return true;
+        }
+
+
+
 
         return false;
     }
@@ -176,6 +184,8 @@ public class WarpPlugin extends JavaPlugin {
             writer.close();
         }
     }
+
+    
 
 
 }
