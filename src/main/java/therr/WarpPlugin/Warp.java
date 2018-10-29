@@ -1,5 +1,6 @@
 package therr.WarpPlugin;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import java.util.UUID;
@@ -13,7 +14,8 @@ public class Warp {
     public void setName(String name){this.name = name;}
     public Location getLocation() {return location;}
     public void setLocation(Location location) { this.location = location;}
-
+    public String getOwner(){return owner;}
+    public void setOwner(String owner){this.owner = owner;}
     public Warp(){}
 
     public Warp(String name, String owner, Location location){
@@ -54,7 +56,7 @@ public class Warp {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append(this.name).append("[").append(this.owner).append("]: ")
+        sb.append(ChatColor.AQUA + this.name).append(ChatColor.WHITE + ": ")
           .append("(x: ").append(this.location.getX()).append(", ")
           .append("y: ").append(this.location.getY()).append(", ")
           .append("z: ").append(this.location.getZ()).append(")");
