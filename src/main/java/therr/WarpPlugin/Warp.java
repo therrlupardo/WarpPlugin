@@ -1,65 +1,67 @@
 package therr.WarpPlugin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-
-import java.util.UUID;
+import org.bukkit.World;
 
 public class Warp {
     private String name;
-    private Location location;
+    private double x, y, z;
+    private float yaw, pitch;
     private String owner;
+    private String world;
 
     public String getName(){return name;}
     public void setName(String name){this.name = name;}
-    public Location getLocation() {return location;}
-    public void setLocation(Location location) { this.location = location;}
+
     public String getOwner(){return owner;}
     public void setOwner(String owner){this.owner = owner;}
+
+    public double getX(){return x;}
+    public void setX(double x){this.x = x;}
+
+    public double getY(){return y;}
+    public void setY(double y){this.y = y;}
+
+    public double getZ(){return z;}
+    public void setZ(double z){this.z = z;}
+
+    public float getYaw(){return yaw;}
+    public void setYaw(float yaw){this.yaw = yaw;}
+
+    public float getPitch(){return pitch;}
+    public void setPitch(float pitch){this.pitch = pitch;}
+
+    public String getWorld(){return world;}
+    public void setWorld(String world){this.world = world;}
+
     public Warp(){}
 
-    public Warp(String name, String owner, Location location){
+    public Warp(String name, String owner, String world, double x, double y, double z, float yaw, float pitch){
         this.owner = owner;
         this.name = name;
-        this.location = location;
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
-    public String prettyJson(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n{\n")
-          .append("\"name\": \"").append(this.name).append("\",\n")
-          .append("\"owner\": \"").append(this.owner).append("\",\n")
-          .append("\"location\": {\n")
-          .append("\t\"world\": \"").append(this.location.getWorld().getName()).append("\",\n")
-          .append("\t\"x\": ").append(this.location.getX()).append(",\n")
-          .append("\t\"y\": ").append(this.location.getY()).append(",\n")
-          .append("\t\"z\": ").append(this.location.getZ()).append(",\n")
-          .append("\t\"yaw\": ").append(this.location.getYaw()).append(",\n")
-          .append("\t\"pitch\": ").append(this.location.getPitch()).append(",\n")
-          .append("\t}\n").append("}\n");
-        return sb.toString();
-    }
-
-    public String simpleString(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.name).append(";")
-          .append(this.owner).append(";")
-          .append(this.location.getWorld().getName()).append(";")
-          .append(this.location.getX()).append(";")
-          .append(this.location.getY()).append(";")
-          .append(this.location.getZ()).append(";")
-          .append(this.location.getYaw()).append(";")
-          .append(this.location.getPitch()).append(";");
-        return sb.toString();
+    public Location getLocation(){
+        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.AQUA + this.name).append(ChatColor.WHITE + ": ")
-          .append("(x: ").append(this.location.getX()).append(", ")
-          .append("y: ").append(this.location.getY()).append(", ")
-          .append("z: ").append(this.location.getZ()).append(")");
+        sb.append(ChatColor.AQUA).append(this.name)
+          .append(ChatColor.WHITE)
+          .append("<").append(this.world).append("> [")
+          .append(this.x).append(", ")
+          .append(this.y).append(", ")
+          .append(this.z).append("]");
         return sb.toString();
     }
 }
