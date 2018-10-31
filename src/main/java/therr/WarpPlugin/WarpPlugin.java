@@ -1,5 +1,9 @@
 package therr.WarpPlugin;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -9,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,46 +23,44 @@ import static java.lang.Math.floor;
 
 public class WarpPlugin extends JavaPlugin {
 
-    //private HashMap<String, Location> Warps = new HashMap();
     private List<Warp> warplist = new LinkedList<>();
+    public static final String WARPS_JSON = "plugins/wp/warps.json";
 
 
     @Override
     public void onEnable() {
 
-        getLogger().info("WarpPlugin enabled!");
-        File file = null;
-        try{
-            file = new File("warplist.th");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            String[] fields;
+        try {
+            Files.createDirectories(Paths.get("plugins/wp"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-
-
-            while ((line = br.readLine()) != null){
-                fields = line.split(";");
-                int i = 0;
-                warplist.add(new Warp(fields[i++], fields[i++], new Location(Bukkit.getWorld(fields[i++]),
-                        Double.parseDouble(fields[i++]),
-                        Double.parseDouble(fields[i++]),
-                        Double.parseDouble(fields[i++]),
-                        Float.parseFloat(fields[i++]),
-                        Float.parseFloat(fields[i]))));
+        try {
+            Gson gson = new Gson();
+            JsonReader reader = new JsonReader(new FileReader(WARPS_JSON));
+            warplist = gson.fromJson(reader, new TypeToken<LinkedList<Warp>>() {
+            }.getType());
+            if (warplist == null) {
+                warplist = new LinkedList<>();
             }
+            reader.close();
 
         }
-        catch(FileNotFoundException e){
+        catch(FileNotFoundException e) {
+            File file = new File(WARPS_JSON);
             try {
-                PrintWriter writer = new PrintWriter("warplist.th", "UTF-8");
-            }
-            catch(IOException ioe){
-                ioe.printStackTrace();
+                file.createNewFile();
+                onEnable();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         }
         catch(IOException e){
             e.printStackTrace();
         }
+
+        getLogger().info("WarpPlugin enabled!");
 
     }
 
@@ -95,17 +99,11 @@ public class WarpPlugin extends JavaPlugin {
                     }
                 }
 
-                Location location = player.getLocation();
-                location.setX(floor(location.getX()) + 0.5);
-                location.setY(floor(location.getY()));
-                location.setZ(floor(location.getZ()) + 0.5);
-                location.setPitch(0);
-                location.setYaw(0);
-                warplist.add(new Warp(args[0], player.getName(), location));
+                warplist.add(new Warp(args[0], player.getName(), player.getLocation().getWorld().getName(), floor(player.getLocation().getX()) + 0.5, floor(player.getLocation().getY()), floor(player.getLocation().getZ()) + 0.5, 0 ,0));
 
                 player.sendMessage("Warp " +
                         ChatColor.AQUA + args[0] +
-                        ChatColor.WHITE + " set in location (" + location.getX() + ", " + location.getY() +  ", " + location.getZ() +  ")");
+                        ChatColor.WHITE + " set in location (" + (floor(player.getLocation().getX()) + 0.5) + ", " + floor(player.getLocation().getY()) +  ", " + (floor(player.getLocation().getZ()) + 0.5) +  ")");
 
                 WriteWarpsToFile();
             }
@@ -170,19 +168,30 @@ public class WarpPlugin extends JavaPlugin {
     }
 
     private void WriteWarpsToFile(){
-        PrintWriter writer = null;
+//        PrintWriter writer = null;
+//        try{
+//            writer = new PrintWriter("warplist.th", "UTF-8");
+//            for(Warp it: warplist){
+//                //writer.println(it.simpleString());
+//            }
+//        }
+//        catch(IOException e){
+//            e.printStackTrace();
+//        }
+//        finally{
+//            writer.close();
+//        }
+
         try{
-            writer = new PrintWriter("warplist.th", "UTF-8");
-            for(Warp it: warplist){
-                writer.println(it.simpleString());
-            }
+            Gson gson = new GsonBuilder().create();
+            FileWriter writer = new FileWriter(WARPS_JSON);
+            gson.toJson(warplist, writer);
+            writer.close();
         }
         catch(IOException e){
             e.printStackTrace();
         }
-        finally{
-            writer.close();
-        }
+
     }
 
     
