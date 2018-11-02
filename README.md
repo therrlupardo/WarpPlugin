@@ -11,7 +11,7 @@ Plugin supports following commands:
 
 * ``` setwarp [warp_name]``` - creates warp "warp_name" in current user location.
 
-* ``` warp [warp_name]``` - teleports user to warp "warp_name", if it exist for that user. 
+* ``` warp [warp_name]``` - teleports user to warp "warp_name", if it exist for current user. 
 
 * ``` delwarp [warp_name]``` - deletes warp "warp_name"
 
