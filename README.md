@@ -18,3 +18,7 @@ Plugin supports following commands:
 * ``` warplist ``` - shows list of available warps for current user.
 
 * ``` warprename [warp_to_rename] [new_name] ``` - renames warp "warp_to_rename" to "new_name"
+
+* ``` warpupdate [warp_to_update]``` - changes warp's location to current user location.
+
+* ``` warpshare [player_name] [warp_name]``` - shares warp with player.

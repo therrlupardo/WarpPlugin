@@ -49,6 +49,17 @@ public class Warp {
         this.pitch = pitch;
     }
 
+    public Warp(Warp other){
+        this.name = other.name;
+        this.owner = other.owner;
+        this.world = other.world;
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
+        this.yaw = other.yaw;
+        this.pitch = other.pitch;
+    }
+
     public Location getLocation(){
         return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }

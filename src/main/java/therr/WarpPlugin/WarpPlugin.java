@@ -194,6 +194,61 @@ public class WarpPlugin extends JavaPlugin {
             }
 
         }
+
+        else if(cmd.getName().equalsIgnoreCase("warpUpdate")){
+            if(args.length < 1){
+                sender.sendMessage(ChatColor.RED + "You have to give warp name!");
+                return true;
+            }
+            else{
+                if(sender instanceof Player){
+                    Player player = (Player) sender;
+                    for(Warp it : warplist){
+                        if(it.getName().equalsIgnoreCase(args[0]) && it.getOwner().equalsIgnoreCase(player.getName())){
+                            it.setWorld(player.getWorld().getName());
+                            it.setX(floor(player.getLocation().getX()) + 0.5);
+                            it.setY(floor(player.getLocation().getY()));
+                            it.setZ(floor(player.getLocation().getZ()) + 0.5);
+                            WriteWarpsToFile();
+                            player.sendMessage("You've successfully updated location of warp " + ChatColor.AQUA + args[0]);
+                            return true;
+                        }
+                    }
+                    sender.sendMessage(ChatColor.RED + "You don't have warp with this name!");
+                }
+
+                return true;
+            }
+        }
+        else if(cmd.getName().equalsIgnoreCase("warpshare")){
+            if(args.length < 2){
+                sender.sendMessage(ChatColor.RED + "You need 2 arguments!");
+                return true;
+            }
+            else{
+                if(sender instanceof Player){
+                    Player player = (Player) sender;
+                    for(Warp it: warplist){
+                        if(it.getName().equalsIgnoreCase(args[1]) && it.getOwner().equalsIgnoreCase(player.getName())){
+                            for(Warp it2 : warplist){
+                                if(it2.getName().equalsIgnoreCase(args[1]) && it2.getOwner().equalsIgnoreCase(args[0])){
+                                    sender.sendMessage(ChatColor.RED + "Player already has warp with this name!");
+                                    return true;
+                                }
+                            }
+                            Warp shared = new Warp(it);
+                            shared.setOwner(args[0]);
+                            warplist.add(shared);
+                            WriteWarpsToFile();
+                            sender.sendMessage("You've shared warp " + ChatColor.AQUA + args[1] + ChatColor.WHITE + " with " + ChatColor.YELLOW + args[0]);
+                            return true;
+                        }
+                    }
+                    sender.sendMessage(ChatColor.RED + "You don't have warp with this name!");
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
