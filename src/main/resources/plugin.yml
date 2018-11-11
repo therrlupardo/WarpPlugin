@@ -1,6 +1,6 @@
 name: WarpPlugin
 main: therr.WarpPlugin.WarpPlugin
-version: 1.3
+version: 1.4
 author: Mateusz Buchajewicz
 commands:
   setwarp:
@@ -28,3 +28,13 @@ commands:
     usage: /warprename [warp_to_rename] [new_name]
     permission: WarpPlugin.warprename
     permission-message: You don't have permission to use warprename!
+  warpupdate:
+    description: Updates existing's warp location to current player location.
+    usage: /warpupdate [warp_to_update]
+    permission: WarpPlugin.warpupdate
+    permission-message: You don't have permission to use warpUpdate!
+  warpshare:
+    description: Shares warp with other player
+    usage: /warpshare [player_name] [warp_name]
+    permission-message: You don't have permission to use warpshare!
+    permission: WarpPlugin.warpshare
